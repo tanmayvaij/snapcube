@@ -17,7 +17,12 @@ const readProject = (path: string) => {
     recursive: true,
     withFileTypes: true,
   })
-    .filter((obj) => obj.isFile() && !obj.parentPath.startsWith("node_modules"))
+    .filter(
+      (obj) =>
+        obj.isFile() &&
+        !obj.parentPath.startsWith("node_modules") &&
+        !obj.parentPath.startsWith(".git")
+    )
     .map(({ name, parentPath }) => ({
       name,
       path: parentPath,
