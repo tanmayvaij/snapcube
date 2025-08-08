@@ -1,11 +1,11 @@
 {
-  "name": "clonecube",
+  "name": "snapcube",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "clonecube": "index.js"
+    "snapcube": "index.js"
   },
   "scripts": {
     "build": "tsc -p ."

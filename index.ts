@@ -24,7 +24,7 @@ const readProject = (path: string) => {
       content: readFileSync(`${parentPath}/${name}`, "utf-8"),
     }));
 
-  writeFileSync("test.clonecube.json", JSON.stringify(project, null, 1));
+  writeFileSync("snapcube.json", JSON.stringify(project, null, 1));
 };
 
 const createProject = (filePath: string) => {
@@ -37,7 +37,7 @@ const createProject = (filePath: string) => {
 };
 
 program
-  .name("clonecube")
+  .name("snapcube")
   .description("Clone or recreate project structure")
   .version("1.0.0");
 

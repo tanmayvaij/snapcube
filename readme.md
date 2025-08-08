@@ -1,8 +1,8 @@
-# 🎲 CloneCube
+# 🎲 Snapcube
 
 > **Clone and recreate project structures with a single command!** 🚀
 
-CloneCube is a powerful CLI tool that allows you to save your project structure to JSON and recreate it anywhere. Perfect for project templates, backups, or sharing project scaffolds with your team.
+Snapcube is a powerful CLI tool that allows you to save your project structure to JSON and recreate it anywhere. Perfect for project templates, backups, or sharing project scaffolds with your team.
 
 ## ✨ Features
 
@@ -16,13 +16,13 @@ CloneCube is a powerful CLI tool that allows you to save your project structure 
 ## 🛠️ Installation
 
 ```bash
-npm install -g clonecube
+npm install -g snapcube
 ```
 
 Or install locally in your project:
 
 ```bash
-npm install clonecube
+npm install snapcube
 ```
 
 ## 🚀 Usage
@@ -32,37 +32,37 @@ npm install clonecube
 Save your current project structure to a JSON file:
 
 ```bash
-clonecube clone <directory-path>
+snapcube clone <directory-path>
 ```
 
 **Example:**
 ```bash
-clonecube clone ./my-awesome-project
+snapcube clone ./my-awesome-project
 ```
 
-This creates a `test.clonecube.json` file containing your entire project structure.
+This creates a `snapcube.json` file containing your entire project structure.
 
 ### Create Project from JSON
 
 Recreate a project structure from a saved JSON file:
 
 ```bash
-clonecube create <json-file>
+snapcube create <json-file>
 ```
 
 **Example:**
 ```bash
-clonecube create test.clonecube.json
+snapcube create snapcube.json
 ```
 
 ## 📋 Commands
 
 | Command | Description | Usage |
 |---------|-------------|-------|
-| `clone` | 📦 Save project structure to JSON | `clonecube clone <dir>` |
-| `create` | 🏗️ Create project from JSON file | `clonecube create <json-file>` |
-| `--help` | ❓ Show help information | `clonecube --help` |
-| `--version` | ℹ️ Show version number | `clonecube --version` |
+| `clone` | 📦 Save project structure to JSON | `snapcube clone <dir>` |
+| `create` | 🏗️ Create project from JSON file | `snapcube create <json-file>` |
+| `--help` | ❓ Show help information | `snapcube --help` |
+| `--version` | ℹ️ Show version number | `snapcube --version` |
 
 ## 📁 File Structure
 
@@ -88,7 +88,6 @@ The generated JSON file contains an array of file objects with this structure:
 - 📋 **Project Templates**: Create reusable project scaffolds
 - 🔄 **Backup & Restore**: Save project snapshots for later restoration
 - 👥 **Team Collaboration**: Share project structures with team members
-- 🧪 **Testing Environments**: Quickly spin up test projects
 - 📚 **Educational**: Distribute coding examples and tutorials
 - 🚀 **Deployment**: Package projects for different environments
 
@@ -98,7 +97,7 @@ The generated JSON file contains an array of file objects with this structure:
 1. 🔍 Recursively scans the specified directory
 2. 📋 Filters out unwanted files (like `node_modules`)
 3. 📖 Reads file contents and metadata
-4. 💾 Serializes everything to `test.clonecube.json`
+4. 💾 Serializes everything to `snapcube.json`
 
 ### Create Process
 1. 📄 Parses the JSON structure file
@@ -108,7 +107,7 @@ The generated JSON file contains an array of file objects with this structure:
 
 ## 🚫 Excluded Files & Directories
 
-CloneCube automatically excludes:
+Snapcube automatically excludes:
 - 📦 `node_modules/` directories
 - 🔒 Hidden files and directories (starting with `.`)
 - 🗑️ System files and caches
@@ -127,8 +126,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 Found a bug or have a suggestion? 
 
-- 🐛 [Report Issues](https://github.com/tanmayvaij/clonecube/issues)
-- 💡 [Request Features](https://github.com/tanmayvaij/clonecube/issues/new)
+- 🐛 [Report Issues](https://github.com/tanmayvaij/snapcube/issues)
+- 💡 [Request Features](https://github.com/tanmayvaij/snapcube/issues/new)
 - 📧 Contact: tanmayvaij22@gmail.com
 
 ## 🙏 Acknowledgments
