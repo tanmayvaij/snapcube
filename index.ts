@@ -11,24 +11,26 @@ interface File {
 
 const program = new Command();
 
-const readProject = (path: string) => {
-  const project = readdirSync(path, {
-    encoding: "utf-8",
-    recursive: true,
-    withFileTypes: true,
-  })
-    .filter(
-      (obj) =>
-        obj.isFile() &&
-        !obj.parentPath.startsWith("node_modules") &&
-        !obj.parentPath.startsWith(".git")
-    )
-    .map(({ name, parentPath }) => ({
-      name,
-      path: parentPath,
-      content: readFileSync(`${parentPath}/${name}`, "utf-8"),
-    }));
+const readDirRecursive = (path: string) => {
+  const files: File[] = [];
 
+  for (const object of readdirSync(path, { withFileTypes: true })) {
+    if (object.isDirectory()) {
+      if (["node_modules", ".git"].includes(object.name)) continue;
+      files.push(...readDirRecursive(`${object.parentPath}/${object.name}`));
+    } else
+      files.push({
+        name: object.name,
+        path: object.parentPath,
+        content: readFileSync(`${object.parentPath}/${object.name}`).toString("base64"),
+      });
+  }
+
+  return files;
+};
+
+const readProject = (path: string) => {
+  const project = readDirRecursive(path);
   writeFileSync("snapcube.json", JSON.stringify(project, null, 1));
 };
 
