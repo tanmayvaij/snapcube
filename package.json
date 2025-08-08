@@ -5,7 +5,10 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "clonecube": "index.ts"
+    "clonecube": "index.js"
+  },
+  "scripts": {
+    "build": "tsc -p ."
   },
   "dependencies": {
     "commander": "^14.0.0"
