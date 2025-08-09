@@ -1,6 +1,7 @@
 {
   "name": "snapcube",
-  "version": "1.0.5",
+  "version": "1.0.6",
+  "description": "📦 Snapshot, backup, and restore any project — binary-safe, fast, and simple CLI.",
   "main": "index.js",
   "license": "MIT",
   "type": "module",
@@ -10,6 +11,26 @@
   "scripts": {
     "build": "tsc -p ."
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tanmayvaij/snapcube.git"
+  },
+  "homepage": "https://github.com/tanmayvaij/snapcube",
+  "bugs": {
+    "url": "https://github.com/tanmayvaij/snapcube/issues"
+  },
+  "keywords": [
+    "cli",
+    "backup",
+    "restore",
+    "snapshot",
+    "template",
+    "project-backup",
+    "project-cloner",
+    "file-system",
+    "node-cli",
+    "binary-files"
+  ],
   "dependencies": {
     "commander": "^14.0.0"
   },
