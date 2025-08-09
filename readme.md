@@ -1,4 +1,4 @@
-# 🎲 Snapcube
+# Snapcube
 
 > **Clone and recreate project structures with a single command!** 🚀
 
@@ -8,7 +8,7 @@ Snapcube is a powerful CLI tool that allows you to save your project structure t
 
 - 📁 **Clone Projects**: Save entire project structures to JSON format
 - 🏗️ **Recreate Projects**: Rebuild projects from saved JSON files  
-- 🚫 **Smart Filtering**: Automatically excludes `node_modules` and other unwanted directories
+- 🚫 **Smart Filtering**: Automatically excludes unwanted directories
 - 🔄 **Recursive Directory Reading**: Handles nested folder structures seamlessly
 - 📝 **Preserves Content**: Maintains all file contents and directory structure
 - ⚡ **Lightning Fast**: Efficient file operations with minimal overhead
