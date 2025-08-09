@@ -1,147 +1,177 @@
-# Snapcube
+# **Snapcube**
 
-> **Clone and recreate project structures with a single command!** 🚀
+> **Clone and recreate complete project structures in seconds!** 🚀
 
-Snapcube is a powerful CLI tool that allows you to save your project structure to JSON and recreate it anywhere. Perfect for project templates, backups, or sharing project scaffolds with your team.
+Snapcube is a **lightweight CLI tool** that lets you snapshot your project’s entire directory tree (including file contents) into a single JSON file — and recreate it anywhere, instantly.
+Perfect for **templates**, **backups**, **AI-assisted reviews**, and **team sharing**.
 
-## ✨ Features
+---
 
-- 📁 **Clone Projects**: Save entire project structures to JSON format
-- 🏗️ **Recreate Projects**: Rebuild projects from saved JSON files  
-- 🚫 **Smart Filtering**: Automatically excludes unwanted directories
-- 🔄 **Recursive Directory Reading**: Handles nested folder structures seamlessly
-- 📝 **Preserves Content**: Maintains all file contents and directory structure
-- ⚡ **Lightning Fast**: Efficient file operations with minimal overhead
+## ✨ **Features**
 
-## 🛠️ Installation
+* 📦 **Project Cloning** – Save your project’s full structure into JSON
+* 🏗 **Project Creation** – Rebuild projects exactly from saved JSON
+* 🚫 **Smart Filtering** – Skips unnecessary directories like `node_modules`
+* 🔄 **Recursive Scanning** – Handles deeply nested folder structures
+* 📝 **Content Preservation** – Keeps all text and binary files intact
+* ⚡ **Fast & Efficient** – Minimal disk and memory overhead
+
+---
+
+## 📦 **Installation**
+
+Global install:
 
 ```bash
 npm install -g snapcube
 ```
 
-Or install locally in your project:
+Local install (inside a project):
 
 ```bash
 npm install snapcube
 ```
 
-## 🚀 Usage
+---
 
-### Clone a Project Structure
+## 🚀 **Usage**
 
-Save your current project structure to a JSON file:
+### **1. Clone a Project**
+
+Save your project as a JSON snapshot:
 
 ```bash
 snapcube clone <directory-path>
 ```
 
 **Example:**
+
 ```bash
 snapcube clone ./my-awesome-project
 ```
 
-This creates a `snapcube.json` file containing your entire project structure.
+📄 This creates a `snapcube.json` file containing your entire project.
 
-### Create Project from JSON
+---
 
-Recreate a project structure from a saved JSON file:
+### **2. Recreate a Project**
+
+Rebuild a project from a saved JSON snapshot:
 
 ```bash
 snapcube create <json-file>
 ```
 
 **Example:**
+
 ```bash
 snapcube create snapcube.json
 ```
 
-## 📋 Commands
+🛠 Restores **files, structure, and content** exactly as before.
 
-| Command | Description | Usage |
-|---------|-------------|-------|
-| `clone` | 📦 Save project structure to JSON | `snapcube clone <dir>` |
-| `create` | 🏗️ Create project from JSON file | `snapcube create <json-file>` |
-| `--help` | ❓ Show help information | `snapcube --help` |
-| `--version` | ℹ️ Show version number | `snapcube --version` |
+---
 
-## 📁 File Structure
+## 📋 **Commands Overview**
 
-The generated JSON file contains an array of file objects with this structure:
+| Command     | Description                    | Example                         |
+| ----------- | ------------------------------ | ------------------------------- |
+| `clone`     | Save project structure to JSON | `snapcube clone ./my-project`   |
+| `create`    | Restore project from JSON      | `snapcube create snapcube.json` |
+| `--help`    | Show help information          | `snapcube --help`               |
+| `--version` | Show version number            | `snapcube --version`            |
+
+---
+
+## 📁 **JSON File Structure**
+
+The generated `snapcube.json` contains an array of objects like:
 
 ```json
 [
   {
     "name": "package.json",
-    "path": "./src",
-    "content": "{\n  \"name\": \"my-project\"...\n}"
+    "path": "./",
+    "content": "{\n  \"name\": \"my-project\"...\n}",
+    "isBinary": false
   },
   {
-    "name": "index.js",
-    "path": "./src",
-    "content": "console.log('Hello World!');"
+    "name": "logo.png",
+    "path": "./assets",
+    "content": "iVBORw0KGgoAAAANSUhEUgAA...", 
+    "isBinary": true
   }
 ]
 ```
 
-## 🎯 Use Cases
+---
 
-- 📋 **Project Templates**: Create reusable project scaffolds
-- 🔄 **Backup & Restore**: Save project snapshots for later restoration
-- 👥 **Team Collaboration**: Share project structures with team members
-- 📚 **Educational**: Distribute coding examples and tutorials
-- 🚀 **Deployment**: Package projects for different environments
+## 🎯 **Use Cases**
 
-## ⚙️ How It Works
+* 📋 **Project Templates** – Distribute starter kits instantly
+* 🔄 **Backup & Restore** – Keep portable, lightweight project backups
+* 🤝 **Collaboration** – Share codebases with teammates without Git
+* 📚 **Education** – Distribute coding examples & tutorials
+* 🤖 **AI Code Review** – Share snapshots with AI for instant analysis
 
-### Clone Process
-1. 🔍 Recursively scans the specified directory
-2. 📋 Filters out unwanted files (like `node_modules`)
-3. 📖 Reads file contents and metadata
-4. 💾 Serializes everything to `snapcube.json`
+---
 
-### Create Process
-1. 📄 Parses the JSON structure file
-2. 📁 Creates necessary directories recursively
-3. ✍️ Writes all files with their original content
-4. ✅ Preserves the exact directory structure
+## ⚙️ **How It Works**
 
-## 🚫 Excluded Files & Directories
+**Cloning Process**
 
-Snapcube automatically excludes:
-- 📦 `node_modules/` directories
-- 🔒 Hidden files and directories (starting with `.`)
-- 🗑️ System files and caches
+1. Scans the target directory recursively
+2. Skips ignored folders (`node_modules`, `.git`, etc.)
+3. Reads each file (Base64 for binary, UTF-8 for text)
+4. Saves the data to `snapcube.json`
 
-## 🤝 Contributing
+**Creation Process**
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+1. Reads the snapshot JSON
+2. Creates all required folders
+3. Writes files with their original content
+4. Preserves directory structure exactly
 
-1. 🍴 Fork the project
-2. 🌟 Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. 💾 Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. 📤 Push to the branch (`git push origin feature/AmazingFeature`)
+---
+
+## 🚫 **Ignored by Default**
+
+* `node_modules/`
+* `.git/` and other hidden directories
+* `.next/`, `dist/`, and other build outputs
+
+---
+
+## 🤝 **Contributing**
+
+1. 🍴 Fork the repo
+2. 🌱 Create a branch: `git checkout -b feature/AmazingFeature`
+3. 💾 Commit changes: `git commit -m "Add some AmazingFeature"`
+4. 📤 Push: `git push origin feature/AmazingFeature`
 5. 🎉 Open a Pull Request
 
-## 🐛 Issues & Support
+---
 
-Found a bug or have a suggestion? 
+## 🐛 **Issues & Support**
 
-- 🐛 [Report Issues](https://github.com/tanmayvaij/snapcube/issues)
-- 💡 [Request Features](https://github.com/tanmayvaij/snapcube/issues/new)
-- 📧 Contact: tanmayvaij22@gmail.com
+* 🐞 [Report a Bug](https://github.com/tanmayvaij/snapcube/issues)
+* 💡 [Request a Feature](https://github.com/tanmayvaij/snapcube/issues/new)
+* 📧 Email: **[tanmayvaij22@gmail.com](mailto:tanmayvaij22@gmail.com)**
 
-## 🙏 Acknowledgments
+---
 
-- Built with ❤️ using Node.js and Commander.js
-- Inspired by the need for simple project structure management
-- Thanks to all contributors who help make this tool better!
+## 🙏 **Acknowledgments**
+
+* Built with ❤️ using Node.js + Commander.js
+* Inspired by the need for quick project structure sharing
+* Thanks to all contributors and early adopters
 
 ---
 
 <div align="center">
 
-**⭐ Star this repo if you found it helpful! ⭐**
+**⭐ If you like Snapcube, star the repo to support development!**
 
-Made with 💖 by Tanmay Vaij
+Made with 💖 by [Tanmay Vaij](https://github.com/tanmayvaij)
 
 </div>
