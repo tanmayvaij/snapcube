@@ -1,13 +1,21 @@
 #!/usr/bin/env node
 
 import { readdirSync, writeFileSync, readFileSync, mkdirSync } from "fs";
+import { extname, join } from "path";
 import { Command } from "commander";
 
 interface File {
   name: string;
   path: string;
   content: string;
+  isBinary: boolean;
 }
+
+const IGNORE_DIRS = ["node_modules", ".git", ".next", "out", "dist"];
+const BINARY_EXTS = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
+
+const isBinaryFile = (name: string) =>
+  BINARY_EXTS.includes(extname(name.toLowerCase()));
 
 const program = new Command();
 
@@ -15,14 +23,19 @@ const readDirRecursive = (path: string) => {
   const files: File[] = [];
 
   for (const object of readdirSync(path, { withFileTypes: true })) {
+    const isBinary = isBinaryFile(object.name);
+
+    const fullPath = join(object.parentPath, object.name);
+
     if (object.isDirectory()) {
-      if (["node_modules", ".git"].includes(object.name)) continue;
-      files.push(...readDirRecursive(`${object.parentPath}/${object.name}`));
+      if (IGNORE_DIRS.includes(object.name)) continue;
+      files.push(...readDirRecursive(fullPath));
     } else
       files.push({
         name: object.name,
         path: object.parentPath,
-        content: readFileSync(`${object.parentPath}/${object.name}`).toString("base64"),
+        content: readFileSync(fullPath).toString(isBinary ? "base64" : "utf-8"),
+        isBinary,
       });
   }
 
@@ -39,7 +52,12 @@ const createProject = (filePath: string) => {
 
   data.forEach((file) => {
     mkdirSync(file.path, { recursive: true });
-    writeFileSync(`${file.path}/${file.name}`, file.content, "utf-8");
+    if (file.isBinary)
+      writeFileSync(
+        join(file.path, file.name),
+        Buffer.from(file.content, "base64")
+      );
+    else writeFileSync(join(file.path, file.name), file.content, "utf-8");
   });
 };
 
