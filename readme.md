@@ -2,7 +2,7 @@
 
 > **Clone and recreate complete project structures in seconds!** 🚀
 
-Snapcube is a **lightweight CLI tool** that lets you snapshot your project’s entire directory tree (including file contents) into a single JSON file — and recreate it anywhere, instantly.
+Snapcube is a **lightweight CLI tool** that lets you snapshot your project’s **entire directory tree** (including or excluding file contents) into a single JSON file — and recreate it anywhere, instantly.
 Perfect for **templates**, **backups**, **AI-assisted reviews**, and **team sharing**.
 
 ---
@@ -13,7 +13,7 @@ Perfect for **templates**, **backups**, **AI-assisted reviews**, and **team shar
 * 🏗 **Project Creation** – Rebuild projects exactly from saved JSON
 * 🚫 **Smart Filtering** – Skips unnecessary directories like `node_modules`
 * 🔄 **Recursive Scanning** – Handles deeply nested folder structures
-* 📝 **Content Preservation** – Keeps all text and binary files intact
+* 📝 **Content Control** – Choose to include **all**, **only non-binary**, or **no** file contents
 * ⚡ **Fast & Efficient** – Minimal disk and memory overhead
 
 ---
@@ -50,7 +50,7 @@ snapcube clone <directory-path>
 snapcube clone ./my-awesome-project
 ```
 
-📄 This creates a `snapcube.json` file containing your entire project.
+📄 This creates a `snapcube.json` file containing your project’s structure (and optionally content).
 
 ---
 
@@ -68,18 +68,22 @@ snapcube create <json-file>
 snapcube create snapcube.json
 ```
 
-🛠 Restores **files, structure, and content** exactly as before.
+🛠 Restores **files, structure, and content** exactly as before (if content was saved).
 
 ---
 
-## 📋 **Commands Overview**
+## 📋 **Commands & Flags**
 
-| Command     | Description                    | Example                         |
-| ----------- | ------------------------------ | ------------------------------- |
-| `clone`     | Save project structure to JSON | `snapcube clone ./my-project`   |
-| `create`    | Restore project from JSON      | `snapcube create snapcube.json` |
-| `--help`    | Show help information          | `snapcube --help`               |
-| `--version` | Show version number            | `snapcube --version`            |
+| Command / Option    | Description                                                                                      | Example                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| `clone`             | Save project structure to JSON                                                                   | `snapcube clone ./my-project`                   |
+| `create`            | Restore project from JSON                                                                        | `snapcube create snapcube.json`                 |
+| `--ignore-binaries` | Ignore content of binary files (e.g., images, PDFs, videos). Content is stored as `null` in JSON | `snapcube clone ./my-project --ignore-binaries` |
+| `--ignore-all`      | Ignore content of **all files** — only structure and metadata are stored                         | `snapcube clone ./my-project --ignore-all`      |
+| `--help`            | Show help information                                                                            | `snapcube --help`                               |
+| `--version`         | Show version number                                                                              | `snapcube --version`                            |
+
+💡 **Note:** You can combine `--ignore-all` and `--ignore-binaries`, but `--ignore-all` will override `--ignore-binaries`.
 
 ---
 
@@ -90,16 +94,20 @@ The generated `snapcube.json` contains an array of objects like:
 ```json
 [
   {
-    "name": "package.json",
-    "path": "./",
+    "fileName": "package.json",
+    "filePath": "./",
     "content": "{\n  \"name\": \"my-project\"...\n}",
-    "isBinary": false
+    "isBinary": false,
+    "encoding": "utf-8",
+    "fileSizeInBytes": 245
   },
   {
-    "name": "logo.png",
-    "path": "./assets",
-    "content": "iVBORw0KGgoAAAANSUhEUgAA...", 
-    "isBinary": true
+    "fileName": "logo.png",
+    "filePath": "./assets",
+    "content": null,
+    "isBinary": true,
+    "encoding": "base64",
+    "fileSizeInBytes": 53214
   }
 ]
 ```
@@ -122,14 +130,14 @@ The generated `snapcube.json` contains an array of objects like:
 
 1. Scans the target directory recursively
 2. Skips ignored folders (`node_modules`, `.git`, etc.)
-3. Reads each file (Base64 for binary, UTF-8 for text)
+3. Reads each file (Base64 for binary, UTF-8 for text) unless ignored
 4. Saves the data to `snapcube.json`
 
 **Creation Process**
 
 1. Reads the snapshot JSON
 2. Creates all required folders
-3. Writes files with their original content
+3. Writes files with their original content (if available)
 4. Preserves directory structure exactly
 
 ---
