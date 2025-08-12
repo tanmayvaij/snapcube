@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, statSync } from "fs";
-import { join } from "path";
+import { basename, join, relative, resolve } from "path";
 
 import { IGNORE_DIRS } from "../config";
 import { isBinaryFile } from "../utils/isBinaryFile";
@@ -31,7 +31,10 @@ export const getProjectFiles = (
 
         files.push({
           fileName: object.name,
-          filePath: object.parentPath,
+          filePath: join(
+            basename(resolve(rootPath)),
+            relative(rootPath, object.parentPath)
+          ),
           content,
           isBinary,
           encoding: isBinary ? "base64" : "utf-8",

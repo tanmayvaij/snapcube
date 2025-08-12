@@ -1,4 +1,5 @@
 import { writeFileSync } from "fs";
+import { basename, resolve } from "path";
 
 import { getProjectFiles } from "../core/getProjectFiles";
 
@@ -7,12 +8,17 @@ export const cloneProject = (
   ignoreBinaries?: boolean,
   ignoreAll?: boolean
 ) => {
-  console.log(`📂 Scanning project: ${rootPath}`);
+  const projectDirectoryName = basename(resolve(rootPath));
+
+  console.log(`📂 Scanning project: ${projectDirectoryName}`);
 
   const files = getProjectFiles(rootPath, ignoreBinaries, ignoreAll);
 
   console.log(`✅ Scan complete. Total files: ${files.length}`);
 
-  writeFileSync("snapcube.json", JSON.stringify(files, null, 4));
+  writeFileSync(
+    `${projectDirectoryName}.snapcube.json`,
+    JSON.stringify(files, null, 4)
+  );
   console.log("💾 Snapshot saved");
 };

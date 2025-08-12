@@ -1,0 +1,122 @@
+[
+    {
+        "fileName": "npm-publish.yml",
+        "filePath": "snapcube/.github/workflows",
+        "content": "name: Publish to npm\n\non:\n  release:\n    types: [created]\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 20\n\n  publish-npm:\n    needs: build\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 20\n          registry-url: https://registry.npmjs.org/\n      - run: yarn install\n      - run: yarn build\n      - run: yarn publish --access public\n        env:\n          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 612
+    },
+    {
+        "fileName": ".gitignore",
+        "filePath": "snapcube",
+        "content": "node_modules\ndist\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 18
+    },
+    {
+        "fileName": "package.json",
+        "filePath": "snapcube",
+        "content": "{\n  \"name\": \"snapcube\",\n  \"version\": \"1.1.1\",\n  \"description\": \"📦 Snapshot, backup, and restore any project — binary-safe, fast, and simple CLI.\",\n  \"license\": \"MIT\",\n  \"bin\": {\n    \"snapcube\": \"./dist/cli.js\"\n  },\n  \"exports\": {\n    \".\": \"./dist/core/index.js\"\n  },\n  \"files\": [\n    \"dist\"\n  ],\n  \"scripts\": {\n    \"build\": \"tsc -p .\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/tanmayvaij/snapcube.git\"\n  },\n  \"homepage\": \"https://github.com/tanmayvaij/snapcube\",\n  \"bugs\": {\n    \"url\": \"https://github.com/tanmayvaij/snapcube/issues\"\n  },\n  \"keywords\": [\n    \"cli\",\n    \"backup\",\n    \"restore\",\n    \"snapshot\",\n    \"template\",\n    \"project-backup\",\n    \"project-cloner\",\n    \"file-system\",\n    \"node-cli\",\n    \"binary-files\"\n  ],\n  \"dependencies\": {\n    \"commander\": \"^14.0.0\"\n  },\n  \"devDependencies\": {\n    \"@types/node\": \"^24.2.0\",\n    \"typescript\": \"^5.9.2\"\n  }\n}\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 904
+    },
+    {
+        "fileName": "readme.md",
+        "filePath": "snapcube",
+        "content": "# **Snapcube**\n\n> **Clone and recreate complete project structures in seconds!** 🚀\n\nSnapcube is a **lightweight CLI tool** that lets you snapshot your project’s **entire directory tree** (including or excluding file contents) into a single JSON file — and recreate it anywhere, instantly.\nPerfect for **templates**, **backups**, **AI-assisted reviews**, and **team sharing**.\n\n---\n\n## ✨ **Features**\n\n* 📦 **Project Cloning** – Save your project’s full structure into JSON\n* 🏗 **Project Creation** – Rebuild projects exactly from saved JSON\n* 🚫 **Smart Filtering** – Skips unnecessary directories like `node_modules`\n* 🔄 **Recursive Scanning** – Handles deeply nested folder structures\n* 📝 **Content Control** – Choose to include **all**, **only non-binary**, or **no** file contents\n* ⚡ **Fast & Efficient** – Minimal disk and memory overhead\n\n---\n\n## 📦 **Installation**\n\nGlobal install:\n\n```bash\nnpm install -g snapcube\n```\n\nLocal install (inside a project):\n\n```bash\nnpm install snapcube\n```\n\n---\n\n## 🚀 **Usage**\n\n### **1. Clone a Project**\n\nSave your project as a JSON snapshot:\n\n```bash\nsnapcube clone <directory-path>\n```\n\n**Example:**\n\n```bash\nsnapcube clone ./my-awesome-project\n```\n\n📄 This creates a `snapcube.json` file containing your project’s structure (and optionally content).\n\n---\n\n### **2. Recreate a Project**\n\nRebuild a project from a saved JSON snapshot:\n\n```bash\nsnapcube create <json-file>\n```\n\n**Example:**\n\n```bash\nsnapcube create snapcube.json\n```\n\n🛠 Restores **files, structure, and content** exactly as before (if content was saved).\n\n---\n\n## 📋 **Commands & Flags**\n\n| Command / Option    | Description                                                                                      | Example                                         |\n| ------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------- |\n| `clone`             | Save project structure to JSON                                                                   | `snapcube clone ./my-project`                   |\n| `create`            | Restore project from JSON                                                                        | `snapcube create snapcube.json`                 |\n| `--ignore-binaries` | Ignore content of binary files (e.g., images, PDFs, videos). Content is stored as `null` in JSON | `snapcube clone ./my-project --ignore-binaries` |\n| `--ignore-all`      | Ignore content of **all files** — only structure and metadata are stored                         | `snapcube clone ./my-project --ignore-all`      |\n| `--help`            | Show help information                                                                            | `snapcube --help`                               |\n| `--version`         | Show version number                                                                              | `snapcube --version`                            |\n\n💡 **Note:** You can combine `--ignore-all` and `--ignore-binaries`, but `--ignore-all` will override `--ignore-binaries`.\n\n---\n\n## 📁 **JSON File Structure**\n\nThe generated `snapcube.json` contains an array of objects like:\n\n```json\n[\n  {\n    \"fileName\": \"package.json\",\n    \"filePath\": \"./\",\n    \"content\": \"{\\n  \\\"name\\\": \\\"my-project\\\"...\\n}\",\n    \"isBinary\": false,\n    \"encoding\": \"utf-8\",\n    \"fileSizeInBytes\": 245\n  },\n  {\n    \"fileName\": \"logo.png\",\n    \"filePath\": \"./assets\",\n    \"content\": null,\n    \"isBinary\": true,\n    \"encoding\": \"base64\",\n    \"fileSizeInBytes\": 53214\n  }\n]\n```\n\n---\n\n## 🎯 **Use Cases**\n\n* 📋 **Project Templates** – Distribute starter kits instantly\n* 🔄 **Backup & Restore** – Keep portable, lightweight project backups\n* 🤝 **Collaboration** – Share codebases with teammates without Git\n* 📚 **Education** – Distribute coding examples & tutorials\n* 🤖 **AI Code Review** – Share snapshots with AI for instant analysis\n\n---\n\n## ⚙️ **How It Works**\n\n**Cloning Process**\n\n1. Scans the target directory recursively\n2. Skips ignored folders (`node_modules`, `.git`, etc.)\n3. Reads each file (Base64 for binary, UTF-8 for text) unless ignored\n4. Saves the data to `snapcube.json`\n\n**Creation Process**\n\n1. Reads the snapshot JSON\n2. Creates all required folders\n3. Writes files with their original content (if available)\n4. Preserves directory structure exactly\n\n---\n\n## 🚫 **Ignored by Default**\n\n* `node_modules/`\n* `.git/` and other hidden directories\n* `.next/`, `dist/`, and other build outputs\n\n---\n\n## 🤝 **Contributing**\n\n1. 🍴 Fork the repo\n2. 🌱 Create a branch: `git checkout -b feature/AmazingFeature`\n3. 💾 Commit changes: `git commit -m \"Add some AmazingFeature\"`\n4. 📤 Push: `git push origin feature/AmazingFeature`\n5. 🎉 Open a Pull Request\n\n---\n\n## 🐛 **Issues & Support**\n\n* 🐞 [Report a Bug](https://github.com/tanmayvaij/snapcube/issues)\n* 💡 [Request a Feature](https://github.com/tanmayvaij/snapcube/issues/new)\n* 📧 Email: **[tanmayvaij22@gmail.com](mailto:tanmayvaij22@gmail.com)**\n\n---\n\n## 🙏 **Acknowledgments**\n\n* Built with ❤️ using Node.js + Commander.js\n* Inspired by the need for quick project structure sharing\n* Thanks to all contributors and early adopters\n\n---\n\n<div align=\"center\">\n\n**⭐ If you like Snapcube, star the repo to support development!**\n\nMade with 💖 by [Tanmay Vaij](https://github.com/tanmayvaij)\n\n</div>\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 5486
+    },
+    {
+        "fileName": "cli.ts",
+        "filePath": "snapcube/src",
+        "content": "#!/usr/bin/env node\n\nimport { Command } from \"commander\";\n\nimport { cloneProject, createProject } from \"./commands\";\n\nconst program = new Command();\n\nprogram\n  .name(\"snapcube\")\n  .description(\"Clone or recreate project structure\")\n  .version(\"1.0.0\");\n\nprogram\n  .command(\"clone\")\n  .argument(\"<dir>\", \"Directory to clone\")\n  .description(\"Save structure of the project to JSON\")\n  .option(\"--ignore-binaries\", \"Ignore files like images, pdfs, videos etc\")\n  .option(\"--ignore-all\", \"Ignore all files\")\n  .action((rootPath, options) =>\n    cloneProject(rootPath, options.ignoreBinaries, options.ignoreAll)\n  );\n\nprogram\n  .command(\"create\")\n  .argument(\"<json-file>\", \"JSON file to create project from\")\n  .description(\"Create project files from a saved JSON\")\n  .action(createProject);\n\nprogram.parse();\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 806
+    },
+    {
+        "fileName": "cloneProject.ts",
+        "filePath": "snapcube/src/commands",
+        "content": "import { writeFileSync } from \"fs\";\nimport { basename, resolve } from \"path\";\n\nimport { getProjectFiles } from \"../core/getProjectFiles\";\n\nexport const cloneProject = (\n  rootPath: string,\n  ignoreBinaries?: boolean,\n  ignoreAll?: boolean\n) => {\n  const projectDirectoryName = basename(resolve(rootPath));\n\n  console.log(`📂 Scanning project: ${projectDirectoryName}`);\n\n  const files = getProjectFiles(rootPath, ignoreBinaries, ignoreAll);\n\n  console.log(`✅ Scan complete. Total files: ${files.length}`);\n\n  writeFileSync(\n    `${projectDirectoryName}.snapcube.json`,\n    JSON.stringify(files, null, 4)\n  );\n  console.log(\"💾 Snapshot saved\");\n};\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 654
+    },
+    {
+        "fileName": "createProject.ts",
+        "filePath": "snapcube/src/commands",
+        "content": "import { mkdirSync, readFileSync, writeFileSync } from \"fs\";\nimport { join } from \"path\";\n\nexport const createProject = (filePath: string) => {\n  console.log(`📂 Restoring project from: ${filePath}`);\n\n  const data = JSON.parse(readFileSync(filePath, \"utf-8\")) as SnapCubeFile[];\n\n  for (const file of data) {\n    mkdirSync(file.filePath, { recursive: true });\n\n    const fullPath = join(file.filePath, file.fileName);\n\n    if (file.content === null) {\n      console.log(`⚠️ Skipping content for ignored file: ${fullPath}`);\n      continue;\n    }\n\n    if (file.isBinary) {\n      console.log(`🖼 Restoring binary file: ${fullPath}`);\n      writeFileSync(fullPath, Buffer.from(file.content, \"base64\"));\n    } else {\n      console.log(`✏️ Restoring text file: ${fullPath}`);\n      writeFileSync(fullPath, file.content, \"utf-8\");\n    }\n  }\n\n  console.log(`✅ Project restored successfully.`);\n};\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 905
+    },
+    {
+        "fileName": "index.ts",
+        "filePath": "snapcube/src/commands",
+        "content": "export * from \"./cloneProject\";\nexport * from \"./createProject\";\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 65
+    },
+    {
+        "fileName": "config.ts",
+        "filePath": "snapcube/src",
+        "content": "const IGNORE_DIRS = [\"node_modules\", \".git\", \".next\", \"out\", \"dist\"];\nconst BINARY_EXTS = [\".png\", \".jpg\", \".jpeg\", \".gif\", \".webp\"];\n\nexport { IGNORE_DIRS, BINARY_EXTS };\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 172
+    },
+    {
+        "fileName": "getProjectFiles.ts",
+        "filePath": "snapcube/src/core",
+        "content": "import { readdirSync, readFileSync, statSync } from \"fs\";\nimport { basename, join, relative, resolve } from \"path\";\n\nimport { IGNORE_DIRS } from \"../config\";\nimport { isBinaryFile } from \"../utils/isBinaryFile\";\n\nexport const getProjectFiles = (\n  rootPath: string,\n  ignoreBinaries?: boolean,\n  ignoreAll?: boolean\n) => {\n  const files: SnapCubeFile[] = [];\n\n  const scanDir = (path: string) => {\n    for (const object of readdirSync(path, { withFileTypes: true })) {\n      const fullPath = join(object.parentPath, object.name);\n\n      if (object.isDirectory()) {\n        if (IGNORE_DIRS.includes(object.name)) continue;\n\n        scanDir(fullPath);\n      } else {\n        const isBinary = isBinaryFile(object.name);\n\n        let content: string | null = null;\n\n        if (!(ignoreAll || (ignoreBinaries && isBinary)))\n          content = readFileSync(fullPath).toString(\n            isBinary ? \"base64\" : \"utf-8\"\n          );\n\n        files.push({\n          fileName: object.name,\n          filePath: join(\n            basename(resolve(rootPath)),\n            relative(rootPath, object.parentPath)\n          ),\n          content,\n          isBinary,\n          encoding: isBinary ? \"base64\" : \"utf-8\",\n          fileSizeInBytes: statSync(fullPath).size,\n        });\n      }\n    }\n  };\n\n  scanDir(rootPath);\n\n  return files;\n};\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 1328
+    },
+    {
+        "fileName": "index.ts",
+        "filePath": "snapcube/src/core",
+        "content": "export * from \"./getProjectFiles\";\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 35
+    },
+    {
+        "fileName": "isBinaryFile.ts",
+        "filePath": "snapcube/src/utils",
+        "content": "import { extname } from \"path\";\nimport { BINARY_EXTS } from \"../config\";\n\nexport const isBinaryFile = (fileName: string) =>\n  BINARY_EXTS.includes(extname(fileName.toLowerCase()));\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 181
+    },
+    {
+        "fileName": "tsconfig.json",
+        "filePath": "snapcube",
+        "content": "{\n  // Visit https://aka.ms/tsconfig to read more about this file\n  \"compilerOptions\": {\n    // File Layout\n    \"rootDir\": \"./src\",\n    \"outDir\": \"./dist\",\n\n    // Environment Settings\n    // See also https://aka.ms/tsconfig/module\n    \"module\": \"nodenext\",\n    \"target\": \"esnext\",\n\n    // For nodejs:\n    // \"lib\": [\"esnext\"],\n    \"types\": [\"node\"],\n    // and npm install -D @types/node\n\n    // Other Outputs\n    \"sourceMap\": true,\n    \"declaration\": true,\n    \"declarationMap\": true,\n\n    // Stricter Typechecking Options\n    \"noUncheckedIndexedAccess\": true,\n    \"exactOptionalPropertyTypes\": true,\n\n    // Style Options\n    // \"noImplicitReturns\": true,\n    // \"noImplicitOverride\": true,\n    // \"noUnusedLocals\": true,\n    // \"noUnusedParameters\": true,\n    // \"noFallthroughCasesInSwitch\": true,\n    // \"noPropertyAccessFromIndexSignature\": true,\n\n    // Recommended Options\n    \"strict\": true,\n    \"jsx\": \"react-jsx\",\n    \"verbatimModuleSyntax\": false,\n    \"isolatedModules\": true,\n    \"noUncheckedSideEffectImports\": true,\n    \"moduleDetection\": \"force\",\n    \"skipLibCheck\": true\n  },\n  \"include\": [\"src/**/*\", \"types.d.ts\"]\n}\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 1136
+    },
+    {
+        "fileName": "types.d.ts",
+        "filePath": "snapcube",
+        "content": "interface SnapCubeFile {\n  fileName: string;\n  filePath: string;\n  content: string | null;\n  isBinary: boolean;\n  encoding: \"base64\" | \"utf-8\";\n  fileSizeInBytes: number;\n}\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 173
+    },
+    {
+        "fileName": "yarn.lock",
+        "filePath": "snapcube",
+        "content": "# THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.\n# yarn lockfile v1\n\n\n\"@types/node@^24.2.0\":\n  version \"24.2.0\"\n  resolved \"https://registry.yarnpkg.com/@types/node/-/node-24.2.0.tgz#cde712f88c5190006d6b069232582ecd1f94a760\"\n  integrity sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==\n  dependencies:\n    undici-types \"~7.10.0\"\n\ncommander@^14.0.0:\n  version \"14.0.0\"\n  resolved \"https://registry.yarnpkg.com/commander/-/commander-14.0.0.tgz#f244fc74a92343514e56229f16ef5c5e22ced5e9\"\n  integrity sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==\n\ntypescript@^5.9.2:\n  version \"5.9.2\"\n  resolved \"https://registry.yarnpkg.com/typescript/-/typescript-5.9.2.tgz#d93450cddec5154a2d5cabe3b8102b83316fb2a6\"\n  integrity sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==\n\nundici-types@~7.10.0:\n  version \"7.10.0\"\n  resolved \"https://registry.yarnpkg.com/undici-types/-/undici-types-7.10.0.tgz#4ac2e058ce56b462b056e629cc6a02393d3ff350\"\n  integrity sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag==\n",
+        "isBinary": false,
+        "encoding": "utf-8",
+        "fileSizeInBytes": 1190
+    }
+]
