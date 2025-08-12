@@ -11,6 +11,9 @@ export const getProjectFiles = (
 ) => {
   const files: SnapCubeFile[] = [];
 
+  if (!statSync(rootPath).isDirectory())
+    throw new Error("❌ Error: provided path is not a directory");
+
   const scanDir = (path: string) => {
     for (const object of readdirSync(path, { withFileTypes: true })) {
       const fullPath = join(object.parentPath, object.name);

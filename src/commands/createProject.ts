@@ -1,7 +1,12 @@
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
+import { isSnapcubeJsonValid } from "../core";
 
 export const createProject = (filePath: string) => {
+  console.log("Validating snapcube file");
+
+  if (!isSnapcubeJsonValid(filePath)) throw new Error("Invalid snapcube file");
+
   console.log(`📂 Restoring project from: ${filePath}`);
 
   const data = JSON.parse(readFileSync(filePath, "utf-8")) as SnapCubeFile[];
