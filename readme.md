@@ -11,12 +11,14 @@ Perfect for **templates**, **backups**, **AI-assisted reviews**, and **team shar
 
 ## ✨ **Features**
 
-* 📦 **Project Cloning** – Save your project’s structure and contents into JSON
+* 📦 **Local Project Cloning** – Save your project’s structure and contents into JSON
+* 🌐 **GitHub Repo Cloning** – Fetch any public GitHub repository directly into JSON (no manual download needed)
 * 🏗 **Project Creation** – Rebuild projects exactly from saved JSON
 * 🚫 **Smart Filtering** – Skips unnecessary directories like `node_modules`
 * 🔄 **Recursive Scanning** – Handles deeply nested folder structures
 * 📝 **Content Control** – Choose to include **all**, **only non-binary**, or **no** file contents
 * ⚡ **Fast & Efficient** – Minimal disk and memory overhead
+* ✅ **Validation** – Detects and warns if a `.snapcube.json` is invalid before creation
 
 ---
 
@@ -38,7 +40,7 @@ snapcube clone ./my-project
 
 ### **Using Without Installation (`npx`)**
 
-If you don’t want to install it globally, you can run Snapcube directly using **npx**:
+If you don’t want to install globally, you can run Snapcube directly:
 
 ```bash
 npx snapcube clone ./my-project
@@ -46,9 +48,9 @@ npx snapcube clone ./my-project
 
 💡 **Notes for `npx` usage**:
 
-* On first run, `npx` will download the package temporarily.
+* On first run, `npx` downloads the package temporarily.
 * You **must** have Node.js installed (version 18+ recommended).
-* If you get `command not found` after confirming install, try running again — sometimes the first run only fetches dependencies.
+* If you get `command not found`, try again — sometimes the first run only fetches dependencies.
 
 **Example workflow with `npx`**:
 
@@ -64,7 +66,7 @@ npx snapcube create my-project.snapcube.json
 
 ## 🚀 **Usage Examples**
 
-### **1. Clone a Project**
+### **1. Clone a Local Project**
 
 ```bash
 snapcube clone <directory-path>
@@ -76,11 +78,38 @@ Example:
 snapcube clone ./my-awesome-project
 ```
 
-This will generate `my-awesome-project.snapcube.json` containing your project’s structure and optionally contents.
+This will generate:
+
+```
+my-awesome-project.snapcube.json
+```
 
 ---
 
-### **2. Recreate a Project**
+### **2. Clone a GitHub Repository**
+
+```bash
+snapcube clone-repo <username/repo>
+```
+
+Examples:
+
+```bash
+# Clone Snapcube repo itself
+snapcube clone-repo tanmayvaij/snapcube
+
+# Clone without binary file contents
+snapcube clone-repo tanmayvaij/artistly --ignore-binaries
+
+# Clone only structure (no file contents)
+snapcube clone-repo tanmayvaij/artistly --ignore-all
+```
+
+📄 Generates `{repo-name}.snapcube.json`.
+
+---
+
+### **3. Recreate a Project**
 
 ```bash
 snapcube create <json-file>
@@ -100,7 +129,8 @@ The project will be recreated inside a folder named after the original project.
 
 | Command / Option    | Description                                                       | Example                                         |
 | ------------------- | ----------------------------------------------------------------- | ----------------------------------------------- |
-| `clone`             | Save project structure to JSON                                    | `snapcube clone ./my-project`                   |
+| `clone`             | Save local project structure to JSON                              | `snapcube clone ./my-project`                   |
+| `clone-repo`        | Save structure of a **GitHub repo** to JSON                       | `snapcube clone-repo tanmayvaij/snapcube`       |
 | `create`            | Restore project from JSON                                         | `snapcube create my-project.snapcube.json`      |
 | `--ignore-binaries` | Ignore content of binary files (images, PDFs, videos, etc.)       | `snapcube clone ./my-project --ignore-binaries` |
 | `--ignore-all`      | Ignore content of **all files** — only structure & metadata saved | `snapcube clone ./my-project --ignore-all`      |
@@ -113,7 +143,7 @@ The project will be recreated inside a folder named after the original project.
 
 ## 📁 **JSON File Structure**
 
-The generated JSON looks like this:
+Example output:
 
 ```json
 [
@@ -142,9 +172,10 @@ The generated JSON looks like this:
 
 * 📋 **Project Templates** – Distribute starter kits instantly
 * 🔄 **Backup & Restore** – Keep lightweight project backups
+* 🌐 **Clone GitHub Repos to JSON** – Store snapshots for later use
 * 🤝 **Collaboration** – Share codebases without using Git
 * 📚 **Education** – Distribute coding examples & tutorials
-* 🤖 **AI Code Review** – Send a `.snapcube.json` for AI-assisted debugging
+* 🤖 **AI Code Review** – Send `.snapcube.json` for AI-assisted debugging
 
 ---
 
@@ -152,14 +183,14 @@ The generated JSON looks like this:
 
 ### **Cloning Process**
 
-1. Scans the target directory recursively
+1. Scans the target directory or GitHub repo recursively
 2. Skips ignored folders (`node_modules`, `.git`, etc.)
 3. Reads file content (Base64 for binary, UTF-8 for text) unless ignored
 4. Saves everything to a `.snapcube.json` file
 
 ### **Creation Process**
 
-1. Validates the JSON file format
+1. Validates the `.snapcube.json` format
 2. Creates necessary folders
 3. Restores files with their original content (if available)
 4. Recreates the exact directory structure
@@ -206,4 +237,4 @@ The generated JSON looks like this:
 
 Made with 💖 by [Tanmay Vaij](https://github.com/tanmayvaij)
 
-</div>  
+</div>
