@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 
-import { cloneProject, createProject } from "./commands";
+import { cloneGithubRepo, cloneProject, createProject } from "./commands";
 
 const program = new Command();
 
@@ -20,6 +20,25 @@ program
   .action((rootPath, options) => {
     try {
       cloneProject(rootPath, options.ignoreBinaries, options.ignoreAll);
+    } catch (err: any) {
+      console.error(err.message);
+      process.exit(1);
+    }
+  });
+
+program
+  .command("clone-repo")
+  .argument("<username/repo>", "Repo to clone")
+  .description("Save structure and data of the repo to JSON")
+  .option("--ignore-binaries", "Ignore files like images, pdfs, videos etc")
+  .option("--ignore-all", "Ignore all files")
+  .action(async (repository, options) => {
+    try {
+      await cloneGithubRepo(
+        repository,
+        options.ignoreBinaries,
+        options.ignoreAll
+      );
     } catch (err: any) {
       console.error(err.message);
       process.exit(1);

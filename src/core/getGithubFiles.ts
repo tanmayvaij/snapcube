@@ -1,14 +1,28 @@
 import { isBinaryFile } from "../utils/isBinaryFile";
 
 export const getGithubFiles = async (
-  baseRepoUrl: string,
+  repository: string,
   ignoreBinaries?: boolean,
   ignoreAll?: boolean
 ) => {
   const files: SnapCubeFile[] = [];
 
+  const repoUrl = `https://api.github.com/repos/${repository}/contents`;
+
+  const repoName = repository.split("/")[1];
+
   const scanRepo = async (path: string) => {
-    const res = await fetch(`${baseRepoUrl}/${path}`);
+    const res = await fetch(`${repoUrl}/${path}`);
+
+    if (!res.ok) {
+      if (res.status === 404)
+        throw new Error(`Repository or path not found: ${repository}/${path}`);
+      else
+        throw new Error(
+          `Failed to fetch repo: ${res.status} ${res.statusText}`
+        );
+    }
+
     const objects = (await res.json()) as GithubRepoObject[];
 
     for (const object of objects) {
@@ -28,7 +42,7 @@ export const getGithubFiles = async (
 
         files.push({
           fileName: object.name,
-          filePath: object.path,
+          filePath: `${repoName}/${object.path}`,
           content,
           isBinary,
           encoding: isBinary ? "base64" : "utf-8",
@@ -42,11 +56,3 @@ export const getGithubFiles = async (
 
   return files;
 };
-
-// (async () => {
-//   console.log(
-//     await getGithubFiles(
-//       "https://api.github.com/repos/tanmayvaij/snapcube/contents"
-//     )
-//   );
-// })();
