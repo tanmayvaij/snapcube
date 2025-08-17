@@ -13,6 +13,7 @@ Perfect for **templates**, **backups**, **AI-assisted reviews**, and **team shar
 
 * 📦 **Local Project Cloning** – Save your project’s structure and contents into JSON
 * 🌐 **GitHub Repo Cloning** – Fetch any public GitHub repository directly into JSON (no manual download needed)
+* 🔑 **Private Repo Cloning** – Clone **private GitHub repositories** by passing a Personal Access Token (`--token`)
 * 🏗 **Project Creation** – Rebuild projects exactly from saved JSON
 * 🚫 **Smart Filtering** – Skips unnecessary directories like `node_modules`
 * 🔄 **Recursive Scanning** – Handles deeply nested folder structures
@@ -109,6 +110,42 @@ snapcube clone-repo tanmayvaij/artistly --ignore-all
 
 ---
 
+### **🔑 Clone a Private GitHub Repository**
+
+Private repositories require authentication with a **GitHub Personal Access Token**.
+
+```bash
+snapcube clone-repo username/private-repo --token <your_github_token>
+```
+
+Examples:
+
+```bash
+# Clone a private repo fully
+snapcube clone-repo myorg/secret-project --token ghp_xxx123abc
+
+# Clone private repo but skip binary files
+snapcube clone-repo myorg/secret-project --ignore-binaries --token ghp_xxx123abc
+```
+
+⚠️ If you try cloning a private repo without `--token`, Snapcube will throw an error:
+
+```
+Repository is private or does not exist: username/private-repo. Please provide a GitHub token with --token.
+```
+
+👉 **How to generate a GitHub token**:
+
+1. Go to [GitHub Settings → Developer Settings → Personal Access Tokens](https://github.com/settings/tokens).
+2. Click **Generate new token** → Choose **classic token** (for now).
+3. Select scopes:
+
+   * `repo` (to access private repos)
+   * `read:packages` (optional, if needed)
+4. Copy the generated token and use it with `--token`.
+
+---
+
 ### **3. Recreate a Project**
 
 ```bash
@@ -127,15 +164,16 @@ The project will be recreated inside a folder named after the original project.
 
 ## 📋 **Commands & Flags**
 
-| Command / Option    | Description                                                       | Example                                         |
-| ------------------- | ----------------------------------------------------------------- | ----------------------------------------------- |
-| `clone`             | Save local project structure to JSON                              | `snapcube clone ./my-project`                   |
-| `clone-repo`        | Save structure of a **GitHub repo** to JSON                       | `snapcube clone-repo tanmayvaij/snapcube`       |
-| `create`            | Restore project from JSON                                         | `snapcube create my-project.snapcube.json`      |
-| `--ignore-binaries` | Ignore content of binary files (images, PDFs, videos, etc.)       | `snapcube clone ./my-project --ignore-binaries` |
-| `--ignore-all`      | Ignore content of **all files** — only structure & metadata saved | `snapcube clone ./my-project --ignore-all`      |
-| `--help`            | Show help information                                             | `snapcube --help`                               |
-| `--version`         | Show version number                                               | `snapcube --version`                            |
+| Command / Option    | Description                                                       | Example                                                |
+| ------------------- | ----------------------------------------------------------------- | ------------------------------------------------------ |
+| `clone`             | Save local project structure to JSON                              | `snapcube clone ./my-project`                          |
+| `clone-repo`        | Save structure of a **GitHub repo** to JSON                       | `snapcube clone-repo tanmayvaij/snapcube`              |
+| `create`            | Restore project from JSON                                         | `snapcube create my-project.snapcube.json`             |
+| `--ignore-binaries` | Ignore content of binary files (images, PDFs, videos, etc.)       | `snapcube clone ./my-project --ignore-binaries`        |
+| `--ignore-all`      | Ignore content of **all files** — only structure & metadata saved | `snapcube clone ./my-project --ignore-all`             |
+| `--token <token>`   | Provide GitHub token for **private repos**                        | `snapcube clone-repo username/private --token ghp_xxx` |
+| `--help`            | Show help information                                             | `snapcube --help`                                      |
+| `--version`         | Show version number                                               | `snapcube --version`                                   |
 
 💡 **Tip:** If both `--ignore-all` and `--ignore-binaries` are provided, `--ignore-all` takes priority.
 
@@ -173,6 +211,7 @@ Example output:
 * 📋 **Project Templates** – Distribute starter kits instantly
 * 🔄 **Backup & Restore** – Keep lightweight project backups
 * 🌐 **Clone GitHub Repos to JSON** – Store snapshots for later use
+* 🔑 **Private Repo Snapshots** – Archive or share internal projects securely
 * 🤝 **Collaboration** – Share codebases without using Git
 * 📚 **Education** – Distribute coding examples & tutorials
 * 🤖 **AI Code Review** – Send `.snapcube.json` for AI-assisted debugging

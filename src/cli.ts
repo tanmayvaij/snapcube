@@ -9,8 +9,13 @@ const program = new Command();
 program
   .name("snapcube")
   .description("Clone or recreate project structure")
-  .version("1.0.0");
+  .version("1.3.0");
 
+/**
+ * -------------------------
+ * Local Project Cloning
+ * -------------------------
+ */
 program
   .command("clone")
   .argument("<dir>", "Directory to clone")
@@ -26,18 +31,25 @@ program
     }
   });
 
+/**
+ * -------------------------
+ * GitHub Repo Cloning
+ * -------------------------
+ */
 program
   .command("clone-repo")
   .argument("<username/repo>", "Repo to clone")
   .description("Save structure and data of the repo to JSON")
   .option("--ignore-binaries", "Ignore files like images, pdfs, videos etc")
   .option("--ignore-all", "Ignore all files")
+  .option("--token <github_token>", "GitHub personal access token")
   .action(async (repository, options) => {
     try {
       await cloneGithubRepo(
         repository,
         options.ignoreBinaries,
-        options.ignoreAll
+        options.ignoreAll,
+        options.token
       );
     } catch (err: any) {
       console.error(err.message);
@@ -45,6 +57,12 @@ program
     }
   });
 
+
+/**
+ * -------------------------
+ * Project Creation
+ * -------------------------
+ */  
 program
   .command("create")
   .argument("<json-file>", "JSON file to create project from")
@@ -58,4 +76,5 @@ program
     }
   });
 
+// Parse CLI arguments
 program.parse();
