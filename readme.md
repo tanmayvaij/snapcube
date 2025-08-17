@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+📖 Full Documentation → [https://snapcube.netlify.app](https://snapcube.netlify.app)
+
 > **Clone and recreate complete project structures in seconds!** 🚀
 
 Snapcube is a **lightweight CLI tool** that snapshots your project’s **entire directory tree** (including or excluding file contents) into a single JSON file — and recreates it anywhere instantly.
