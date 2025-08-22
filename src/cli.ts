@@ -9,7 +9,7 @@ const program = new Command();
 program
   .name("snapcube")
   .description("Clone or recreate project structure")
-  .version("1.3.1");
+  .version("1.4.0");
 
 /**
  * -------------------------
@@ -22,9 +22,10 @@ program
   .description("Save structure of the project to JSON")
   .option("--ignore-binaries", "Ignore files like images, pdfs, videos etc")
   .option("--ignore-all", "Ignore all files")
-  .action((rootPath, options) => {
+  .option("--structure-only", "Just return the filenames with full path")
+  .action((rootPath, options: ServiceOptions) => {
     try {
-      cloneProject(rootPath, options.ignoreBinaries, options.ignoreAll);
+      cloneProject(rootPath, options);
     } catch (err: any) {
       console.error(err.message);
       process.exit(1);
@@ -43,26 +44,21 @@ program
   .option("--ignore-binaries", "Ignore files like images, pdfs, videos etc")
   .option("--ignore-all", "Ignore all files")
   .option("--token <github_token>", "GitHub personal access token")
-  .action(async (repository, options) => {
+  .option("--structure-only", "Just return the filenames with full path")
+  .action(async (repository, options: ServiceOptions) => {
     try {
-      await cloneGithubRepo(
-        repository,
-        options.ignoreBinaries,
-        options.ignoreAll,
-        options.token
-      );
+      await cloneGithubRepo(repository, options);
     } catch (err: any) {
       console.error(err.message);
       process.exit(1);
     }
   });
 
-
 /**
  * -------------------------
  * Project Creation
  * -------------------------
- */  
+ */
 program
   .command("create")
   .argument("<json-file>", "JSON file to create project from")

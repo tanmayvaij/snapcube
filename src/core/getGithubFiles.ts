@@ -1,3 +1,4 @@
+import { dirname } from "path";
 import { isBinaryFile } from "../utils/isBinaryFile";
 
 /**
@@ -5,27 +6,27 @@ import { isBinaryFile } from "../utils/isBinaryFile";
  * Supports public & private repos (private requires a GitHub token).
  *
  * @param repository - Format: "owner/repo"
- * @param ignoreBinaries - If true, binary files (e.g., images, PDFs) will have content = null
- * @param ignoreAll - If true, ALL files will have content = null (only structure is saved)
- * @param token - (Optional) GitHub Personal Access Token for private repos or higher rate limits
+ * @param options - Configuration for how files should be scanned
+ *    - ignoreBinaries: Skip contents of binary files (images, pdfs, etc.)
+ *    - ignoreAll: Skip contents of all files (structure only)
+ *    - token: Reserved for GitHub API use (not used in local scans)
+ *    - structureOnly: If true, combine `filePath` + `fileName` into one
  *
- * @returns Array of SnapCubeFile objects representing repo files
+ * @returns Array of SnapCubeFile objects or string representing repo files
  *
  * @throws Error if the repo is not accessible, invalid, or token issues occur
  */
 export const getGithubFiles = async (
   repository: string,
-  ignoreBinaries?: boolean,
-  ignoreAll?: boolean,
-  token?: string
+  options: ServiceOptions
 ) => {
-  const files: SnapCubeFile[] = [];
+  const files: SnapCubeFile[] | string[] = [];
 
   // Base API URL to list repo contents
   const repoUrl = `https://api.github.com/repos/${repository}/contents`;
 
   // Extract repo name (second part of "owner/repo")
-  const repoName = repository.split("/")[1];
+  const repoName = repository.split("/")[1]!;
 
   /**
    * Recursively scans a repo path using GitHub API
@@ -34,13 +35,13 @@ export const getGithubFiles = async (
   const scanRepo = async (path: string) => {
     // Fetch directory listing from GitHub API
     const res = await fetch(`${repoUrl}/${path}`, {
-      headers: token ? { Authorization: `token ${token}` } : {},
+      headers: options.token ? { Authorization: `token ${options.token}` } : {},
     });
 
     // Handle HTTP errors explicitly
     if (!res.ok) {
       if (res.status === 404) {
-        if (!token)
+        if (!options.token)
           throw new Error(
             `Repository is private or does not exist: ${repository}. Please provide a GitHub token with --token.`
           );
@@ -60,14 +61,22 @@ export const getGithubFiles = async (
       if (object.type === "dir") {
         // Recurse into subdirectories
         await scanRepo(object.path);
-      } else {
+      } else if (options.structureOnly)
+        (files as string[]).push(`${repoName}/${object.path}`);
+      else {
         // File case
         const isBinary = isBinaryFile(object.name);
 
         let content: string | null = null;
 
         // Fetch file content if not ignored
-        if (!(ignoreAll || (ignoreBinaries && isBinary))) {
+        if (
+          !(
+            options.structureOnly ||
+            options.ignoreAll ||
+            (options.ignoreBinaries && isBinary)
+          )
+        ) {
           const res = await fetch(object.download_url);
 
           if (isBinary)
@@ -75,10 +84,12 @@ export const getGithubFiles = async (
           else content = await res.text();
         }
 
+        const dir = dirname(object.path);
+
         // Push file metadata + content
-        files.push({
+        (files as SnapCubeFile[]).push({
           fileName: object.name,
-          filePath: `${repoName}/${object.path}`, // Prefix with repo name for clarity
+          filePath: `${repoName}${dir === "." ? "" : `/${dir}`}`, // Prefix with repo name for clarity
           content,
           isBinary,
           encoding: isBinary ? "base64" : "utf-8",

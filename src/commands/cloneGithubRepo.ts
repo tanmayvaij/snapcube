@@ -5,15 +5,15 @@ import { getGithubFiles } from "../core";
  * Clone (snapshot) a GitHub repository into a JSON file.
  *
  * @param repository - Repository in the format "owner/repo"
- * @param ignoreBinaries - If true, skips storing binary file contents (keeps metadata only)
- * @param ignoreAll - If true, skips storing all file contents (keeps only structure + metadata)
- * @param token - Optional GitHub personal access token (required for private repos or higher rate limits)
+ * @param options - Configuration for how files should be scanned
+ *    - ignoreBinaries: Skip contents of binary files (images, pdfs, etc.)
+ *    - ignoreAll: Skip contents of all files (structure only)
+ *    - token: Reserved for GitHub API use (not used in local scans)
+ *    - structureOnly: If true, combine `filePath` + `fileName` into one
  */
 export const cloneGithubRepo = async (
   repository: string,
-  ignoreBinaries?: boolean,
-  ignoreAll?: boolean,
-  token?: string
+  options: ServiceOptions
 ) => {
   // Split "owner/repo" into separate variables
   const [owner, repoName] = repository.split("/");
@@ -21,12 +21,7 @@ export const cloneGithubRepo = async (
   console.log(`Scanning project: github:${owner}/${repoName}`);
 
   // Fetch all files and metadata from the GitHub API
-  const files = await getGithubFiles(
-    repository,
-    ignoreBinaries,
-    ignoreAll,
-    token
-  );
+  const files = await getGithubFiles(repository, options);
 
   console.log(`Scan complete. Total files: ${files?.length}`);
 

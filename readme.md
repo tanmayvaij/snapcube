@@ -20,6 +20,7 @@ Perfect for **templates**, **backups**, **AI-assisted reviews**, and **team shar
 * 🚫 **Smart Filtering** – Skips unnecessary directories like `node_modules`
 * 🔄 **Recursive Scanning** – Handles deeply nested folder structures
 * 📝 **Content Control** – Choose to include **all**, **only non-binary**, or **no** file contents
+* 📂 **Structure-Only Mode** – Return only an **array of file paths** (no metadata/contents) — lightweight for AI/LLM project analysis
 * ⚡ **Fast & Efficient** – Minimal disk and memory overhead
 * ✅ **Validation** – Detects and warns if a `.snapcube.json` is invalid before creation
 
@@ -164,6 +165,29 @@ The project will be recreated inside a folder named after the original project.
 
 ---
 
+### **4. Structure-Only Mode (NEW in v1.4.0)**
+
+If you only want the **directory tree** (without file contents, sizes, encodings, etc.), use `--structure-only`.
+
+```bash
+snapcube clone ./my-project --structure-only
+```
+
+Example Output:
+
+```json
+[
+  "my-project/package.json",
+  "my-project/src/index.js",
+  "my-project/src/App.jsx",
+  "my-project/public/index.html"
+]
+```
+
+This is extremely useful for **AI/LLM project understanding**, **lightweight snapshots**, or **tech stack analysis**.
+
+---
+
 ## 📋 **Commands & Flags**
 
 | Command / Option    | Description                                                       | Example                                                |
@@ -173,11 +197,13 @@ The project will be recreated inside a folder named after the original project.
 | `create`            | Restore project from JSON                                         | `snapcube create my-project.snapcube.json`             |
 | `--ignore-binaries` | Ignore content of binary files (images, PDFs, videos, etc.)       | `snapcube clone ./my-project --ignore-binaries`        |
 | `--ignore-all`      | Ignore content of **all files** — only structure & metadata saved | `snapcube clone ./my-project --ignore-all`             |
+| `--structure-only`  | Save **only the file paths** (no metadata/contents)               | `snapcube clone ./my-project --structure-only`         |
 | `--token <token>`   | Provide GitHub token for **private repos**                        | `snapcube clone-repo username/private --token ghp_xxx` |
 | `--help`            | Show help information                                             | `snapcube --help`                                      |
 | `--version`         | Show version number                                               | `snapcube --version`                                   |
 
 💡 **Tip:** If both `--ignore-all` and `--ignore-binaries` are provided, `--ignore-all` takes priority.
+💡 **Note:** `--structure-only` overrides everything else and just outputs an array of file paths.
 
 ---
 
@@ -206,6 +232,15 @@ Example output:
 ]
 ```
 
+📌 **Structure-only mode** simplifies this to just file paths:
+
+```json
+[
+  "my-awesome-project/package.json",
+  "my-awesome-project/assets/logo.png"
+]
+```
+
 ---
 
 ## 🎯 **Use Cases**
@@ -217,6 +252,7 @@ Example output:
 * 🤝 **Collaboration** – Share codebases without using Git
 * 📚 **Education** – Distribute coding examples & tutorials
 * 🤖 **AI Code Review** – Send `.snapcube.json` for AI-assisted debugging
+* 🧠 **LLM Project Analysis** – Use `--structure-only` to let AI quickly identify frameworks, languages, and project setup
 
 ---
 
@@ -243,6 +279,7 @@ Example output:
 * `node_modules/`
 * `.git/` and hidden directories
 * `.next/`, `dist/`, and build output folders
+* Temporary files like `.DS_Store`, `thumbs.db`, and cache directories
 
 ---
 

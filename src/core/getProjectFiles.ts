@@ -9,19 +9,19 @@ import { isBinaryFile } from "../utils/isBinaryFile";
  * for every file, formatted as SnapCubeFile objects.
  *
  * @param rootPath - The absolute or relative path of the project directory
- * @param ignoreBinaries - If true, binary files (e.g. images, PDFs) will have `content = null`
- * @param ignoreAll - If true, ALL files will have `content = null` (only structure saved)
+ * @param options - Configuration for how files should be scanned
+ *    - ignoreBinaries: Skip contents of binary files (images, pdfs, etc.)
+ *    - ignoreAll: Skip contents of all files (structure only)
+ *    - token: Reserved for GitHub API use (not used in local scans)
+ *    - structureOnly: If true, combine `filePath` + `fileName` into one
  *
- * @returns An array of SnapCubeFile objects representing the project
+ * @returns An array of SnapCubeFile objects or string representing the project
  *
  * @throws Error if the provided path is not a directory
  */
-export const getProjectFiles = (
-  rootPath: string,
-  ignoreBinaries?: boolean,
-  ignoreAll?: boolean
-) => {
-  const files: SnapCubeFile[] = [];
+
+export const getProjectFiles = (rootPath: string, options: ServiceOptions) => {
+  const files: SnapCubeFile[] | string[] = [];
 
   // Validate input path: must be a directory
   if (!statSync(rootPath).isDirectory())
@@ -42,28 +42,40 @@ export const getProjectFiles = (
         // Recursive scan
         scanDir(fullPath);
       } else {
-        const isBinary = isBinaryFile(object.name);
-
-        let content: string | null = null;
-
-        // Only read file contents if not ignored
-        if (!(ignoreAll || (ignoreBinaries && isBinary)))
-          content = readFileSync(fullPath).toString(
-            isBinary ? "base64" : "utf-8"
-          );
+        const filePath = join(
+          basename(resolve(rootPath)), // Project root folder name
+          relative(rootPath, object.parentPath) // Relative subpath inside project
+        );
 
         // Push metadata + content into result array
-        files.push({
-          fileName: object.name,
-          filePath: join(
-            basename(resolve(rootPath)), // Project root folder name
-            relative(rootPath, object.parentPath) // Relative subpath inside project
-          ),
-          content,
-          isBinary,
-          encoding: isBinary ? "base64" : "utf-8",
-          fileSizeInBytes: statSync(fullPath).size,
-        });
+        if (options.structureOnly)
+          (files as string[]).push(`${filePath}/${object.name}`);
+        else {
+          const isBinary = isBinaryFile(object.name);
+
+          let content: string | null = null;
+
+          // Only read file contents if not ignored
+          if (
+            !(
+              options.structureOnly ||
+              options.ignoreAll ||
+              (options.ignoreBinaries && isBinary)
+            )
+          )
+            content = readFileSync(fullPath).toString(
+              isBinary ? "base64" : "utf-8"
+            );
+
+          (files as SnapCubeFile[]).push({
+            fileName: object.name,
+            filePath,
+            content,
+            isBinary,
+            encoding: isBinary ? "base64" : "utf-8",
+            fileSizeInBytes: statSync(fullPath).size,
+          });
+        }
       }
     }
   };

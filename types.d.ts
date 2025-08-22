@@ -25,3 +25,10 @@ interface GithubRepoObject {
     html: string;
   };
 }
+
+interface ServiceOptions {
+  ignoreBinaries?: boolean
+  ignoreAll?: boolean
+  token?: string
+  structureOnly?: boolean
+}
