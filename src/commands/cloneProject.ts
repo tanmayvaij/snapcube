@@ -15,7 +15,7 @@ import { getProjectFiles } from "../core/getProjectFiles";
  */
 export const cloneProject = (
   rootPath: string,
-  options: ServiceOptions
+  options?: ServiceOptions
 ) => {
   // Resolve the absolute path and extract just the project folder name
   const projectDirectoryName = basename(resolve(rootPath));

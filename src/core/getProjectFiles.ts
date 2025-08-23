@@ -20,7 +20,7 @@ import { isBinaryFile } from "../utils/isBinaryFile";
  * @throws Error if the provided path is not a directory
  */
 
-export const getProjectFiles = (rootPath: string, options: ServiceOptions) => {
+export const getProjectFiles = (rootPath: string, options?: ServiceOptions) => {
   const files: SnapCubeFile[] | string[] = [];
 
   // Validate input path: must be a directory
@@ -48,7 +48,7 @@ export const getProjectFiles = (rootPath: string, options: ServiceOptions) => {
         );
 
         // Push metadata + content into result array
-        if (options.structureOnly)
+        if (options?.structureOnly)
           (files as string[]).push(`${filePath}/${object.name}`);
         else {
           const isBinary = isBinaryFile(object.name);
@@ -58,9 +58,9 @@ export const getProjectFiles = (rootPath: string, options: ServiceOptions) => {
           // Only read file contents if not ignored
           if (
             !(
-              options.structureOnly ||
-              options.ignoreAll ||
-              (options.ignoreBinaries && isBinary)
+              options?.structureOnly ||
+              options?.ignoreAll ||
+              (options?.ignoreBinaries && isBinary)
             )
           )
             content = readFileSync(fullPath).toString(

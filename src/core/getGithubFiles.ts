@@ -18,7 +18,7 @@ import { isBinaryFile } from "../utils/isBinaryFile";
  */
 export const getGithubFiles = async (
   repository: string,
-  options: ServiceOptions
+  options?: ServiceOptions
 ) => {
   const files: SnapCubeFile[] | string[] = [];
 
@@ -35,13 +35,15 @@ export const getGithubFiles = async (
   const scanRepo = async (path: string) => {
     // Fetch directory listing from GitHub API
     const res = await fetch(`${repoUrl}/${path}`, {
-      headers: options.token ? { Authorization: `token ${options.token}` } : {},
+      headers: options?.token
+        ? { Authorization: `token ${options?.token}` }
+        : {},
     });
 
     // Handle HTTP errors explicitly
     if (!res.ok) {
       if (res.status === 404) {
-        if (!options.token)
+        if (!options?.token)
           throw new Error(
             `Repository is private or does not exist: ${repository}. Please provide a GitHub token with --token.`
           );
@@ -61,7 +63,7 @@ export const getGithubFiles = async (
       if (object.type === "dir") {
         // Recurse into subdirectories
         await scanRepo(object.path);
-      } else if (options.structureOnly)
+      } else if (options?.structureOnly)
         (files as string[]).push(`${repoName}/${object.path}`);
       else {
         // File case
@@ -72,9 +74,9 @@ export const getGithubFiles = async (
         // Fetch file content if not ignored
         if (
           !(
-            options.structureOnly ||
-            options.ignoreAll ||
-            (options.ignoreBinaries && isBinary)
+            options?.structureOnly ||
+            options?.ignoreAll ||
+            (options?.ignoreBinaries && isBinary)
           )
         ) {
           const res = await fetch(object.download_url);

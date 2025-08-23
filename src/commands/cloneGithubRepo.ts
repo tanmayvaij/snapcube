@@ -13,7 +13,7 @@ import { getGithubFiles } from "../core";
  */
 export const cloneGithubRepo = async (
   repository: string,
-  options: ServiceOptions
+  options?: ServiceOptions
 ) => {
   // Split "owner/repo" into separate variables
   const [owner, repoName] = repository.split("/");
