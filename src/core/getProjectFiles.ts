@@ -41,41 +41,41 @@ export const getProjectFiles = (rootPath: string, options?: ServiceOptions) => {
 
         // Recursive scan
         scanDir(fullPath);
+      } else if (options?.structureOnly) {
+        const relativePath = relative(rootPath, object.parentPath);
+
+        (files as string[]).push(
+          `${relativePath ? relativePath+"/" : ""}${object.name}`
+        );
       } else {
         const filePath = join(
           basename(resolve(rootPath)), // Project root folder name
           relative(rootPath, object.parentPath) // Relative subpath inside project
         );
+        const isBinary = isBinaryFile(object.name);
 
-        // Push metadata + content into result array
-        if (options?.structureOnly)
-          (files as string[]).push(`${filePath}/${object.name}`);
-        else {
-          const isBinary = isBinaryFile(object.name);
+        let content: string | null = null;
 
-          let content: string | null = null;
-
-          // Only read file contents if not ignored
-          if (
-            !(
-              options?.structureOnly ||
-              options?.ignoreAll ||
-              (options?.ignoreBinaries && isBinary)
-            )
+        // Only read file contents if not ignored
+        if (
+          !(
+            options?.structureOnly ||
+            options?.ignoreAll ||
+            (options?.ignoreBinaries && isBinary)
           )
-            content = readFileSync(fullPath).toString(
-              isBinary ? "base64" : "utf-8"
-            );
+        )
+          content = readFileSync(fullPath).toString(
+            isBinary ? "base64" : "utf-8"
+          );
 
-          (files as SnapCubeFile[]).push({
-            fileName: object.name,
-            filePath,
-            content,
-            isBinary,
-            encoding: isBinary ? "base64" : "utf-8",
-            fileSizeInBytes: statSync(fullPath).size,
-          });
-        }
+        (files as SnapCubeFile[]).push({
+          fileName: object.name,
+          filePath,
+          content,
+          isBinary,
+          encoding: isBinary ? "base64" : "utf-8",
+          fileSizeInBytes: statSync(fullPath).size,
+        });
       }
     }
   };

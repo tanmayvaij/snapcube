@@ -63,8 +63,7 @@ export const getGithubFiles = async (
       if (object.type === "dir") {
         // Recurse into subdirectories
         await scanRepo(object.path);
-      } else if (options?.structureOnly)
-        (files as string[]).push(`${repoName}/${object.path}`);
+      } else if (options?.structureOnly) (files as string[]).push(object.path);
       else {
         // File case
         const isBinary = isBinaryFile(object.name);
