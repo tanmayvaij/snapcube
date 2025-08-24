@@ -3,6 +3,7 @@ import { basename, join, relative, resolve } from "path";
 
 import { IGNORE_DIRS } from "../config";
 import { isBinaryFile } from "../utils/isBinaryFile";
+import { ServiceOptions, SnapCubeFile } from "../types";
 
 /**
  * Scans a local project directory and returns metadata + content

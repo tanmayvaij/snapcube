@@ -1,5 +1,6 @@
 import { dirname } from "path";
 import { isBinaryFile } from "../utils/isBinaryFile";
+import { GithubRepoObject, ServiceOptions, SnapCubeFile } from "../types";
 
 /**
  * Fetches and serializes all files in a GitHub repository into SnapCubeFile format.

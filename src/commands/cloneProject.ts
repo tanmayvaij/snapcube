@@ -2,6 +2,7 @@ import { writeFileSync } from "fs";
 import { basename, resolve } from "path";
 
 import { getProjectFiles } from "../core/getProjectFiles";
+import { ServiceOptions } from "../types";
 
 /**
  * Clone (snapshot) a local project into a JSON file.

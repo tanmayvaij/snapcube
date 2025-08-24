@@ -1,4 +1,4 @@
-interface SnapCubeFile {
+export interface SnapCubeFile {
   fileName: string;
   filePath: string;
   content: string | null;
@@ -7,7 +7,7 @@ interface SnapCubeFile {
   fileSizeInBytes: number;
 }
 
-interface GithubRepoObject {
+export interface GithubRepoObject {
   name: string;
   path: string;
   sha: string;
@@ -26,9 +26,9 @@ interface GithubRepoObject {
   };
 }
 
-interface ServiceOptions {
-  ignoreBinaries?: boolean
-  ignoreAll?: boolean
-  token?: string
-  structureOnly?: boolean
+export interface ServiceOptions {
+  ignoreBinaries?: boolean;
+  ignoreAll?: boolean;
+  token?: string;
+  structureOnly?: boolean;
 }

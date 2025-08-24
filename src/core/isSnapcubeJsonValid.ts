@@ -1,4 +1,5 @@
 import { readFileSync, statSync } from "fs";
+import { SnapCubeFile } from "../types";
 
 /**
  * Validates whether a given file is a valid SnapCube JSON file.

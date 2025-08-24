@@ -3,13 +3,14 @@
 import { Command } from "commander";
 
 import { cloneGithubRepo, cloneProject, createProject } from "./commands";
+import { ServiceOptions } from "./types";
 
 const program = new Command();
 
 program
   .name("snapcube")
   .description("Clone or recreate project structure")
-  .version("1.4.0");
+  .version("1.4.2");
 
 /**
  * -------------------------

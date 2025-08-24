@@ -1,6 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { isSnapcubeJsonValid } from "../core";
+import { SnapCubeFile } from "../types";
 
 /**
  * Recreate a project from a SnapCube JSON snapshot file.

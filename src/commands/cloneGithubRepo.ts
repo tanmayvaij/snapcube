@@ -1,5 +1,6 @@
 import { writeFileSync } from "fs";
 import { getGithubFiles } from "../core";
+import { ServiceOptions } from "../types";
 
 /**
  * Clone (snapshot) a GitHub repository into a JSON file.
