@@ -1,6 +1,6 @@
 # **Snapcube**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![npm](https://img.shields.io/npm/dw/snapcube)
 
 📖 Full Documentation → [https://snapcube.netlify.app](https://snapcube.netlify.app)
 
