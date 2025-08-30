@@ -4,7 +4,6 @@ export interface SnapCubeFile {
   content: string | null;
   isBinary: boolean;
   encoding: "base64" | "utf-8";
-  fileSizeInBytes: number;
 }
 
 export interface GithubRepoObject {

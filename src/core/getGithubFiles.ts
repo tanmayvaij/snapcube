@@ -72,13 +72,7 @@ export const getGithubFiles = async (
         let content: string | null = null;
 
         // Fetch file content if not ignored
-        if (
-          !(
-            options?.structureOnly ||
-            options?.ignoreAll ||
-            (options?.ignoreBinaries && isBinary)
-          )
-        ) {
+        if (!(options?.ignoreAll || (options?.ignoreBinaries && isBinary))) {
           const res = await fetch(object.download_url);
 
           if (isBinary)
@@ -95,7 +89,6 @@ export const getGithubFiles = async (
           content,
           isBinary,
           encoding: isBinary ? "base64" : "utf-8",
-          fileSizeInBytes: object.size,
         });
       }
     }

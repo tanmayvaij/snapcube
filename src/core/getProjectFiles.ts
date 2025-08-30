@@ -46,7 +46,7 @@ export const getProjectFiles = (rootPath: string, options?: ServiceOptions) => {
         const relativePath = relative(rootPath, object.parentPath);
 
         (files as string[]).push(
-          `${relativePath ? relativePath+"/" : ""}${object.name}`
+          `${relativePath ? relativePath + "/" : ""}${object.name}`
         );
       } else {
         const filePath = join(
@@ -58,13 +58,7 @@ export const getProjectFiles = (rootPath: string, options?: ServiceOptions) => {
         let content: string | null = null;
 
         // Only read file contents if not ignored
-        if (
-          !(
-            options?.structureOnly ||
-            options?.ignoreAll ||
-            (options?.ignoreBinaries && isBinary)
-          )
-        )
+        if (!(options?.ignoreAll || (options?.ignoreBinaries && isBinary)))
           content = readFileSync(fullPath).toString(
             isBinary ? "base64" : "utf-8"
           );
@@ -75,7 +69,6 @@ export const getProjectFiles = (rootPath: string, options?: ServiceOptions) => {
           content,
           isBinary,
           encoding: isBinary ? "base64" : "utf-8",
-          fileSizeInBytes: statSync(fullPath).size,
         });
       }
     }

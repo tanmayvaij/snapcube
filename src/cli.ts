@@ -40,12 +40,12 @@ program
  */
 program
   .command("clone-repo")
-  .argument("<username/repo>", "Repo to clone")
+  .argument("<scm:username/repo>", "Repo to clone")
   .description("Save structure and data of the repo to JSON")
   .option("--ignore-binaries", "Ignore files like images, pdfs, videos etc")
   .option("--ignore-all", "Ignore all files")
-  .option("--token <github_token>", "GitHub personal access token")
   .option("--structure-only", "Just return the filenames with full path")
+  .option("--token <token>", "Personal access token")
   .action(async (repository, options: ServiceOptions) => {
     try {
       await cloneGithubRepo(repository, options);

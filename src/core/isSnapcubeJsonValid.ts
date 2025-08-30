@@ -31,7 +31,6 @@ export const isSnapcubeJsonValid = (filePath: string) => {
       typeof item.filePath !== "string" ||
       typeof item.isBinary !== "boolean" ||
       typeof item.encoding !== "string" ||
-      typeof item.fileSizeInBytes !== "number" ||
       !("content" in item) // content must exist, can be null or string
     ) {
       return false;
