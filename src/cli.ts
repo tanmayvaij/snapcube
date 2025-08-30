@@ -2,7 +2,12 @@
 
 import { Command } from "commander";
 
-import { cloneGithubRepo, cloneProject, createProject } from "./commands";
+import {
+  cloneGithubRepo,
+  cloneGitlabRepo,
+  cloneProject,
+  createProject,
+} from "./commands";
 import { ServiceOptions } from "./types";
 
 const program = new Command();
@@ -40,15 +45,27 @@ program
  */
 program
   .command("clone-repo")
-  .argument("<scm:username/repo>", "Repo to clone")
+  .argument("<scm:username/repo@branch>", "Repo to clone")
   .description("Save structure and data of the repo to JSON")
   .option("--ignore-binaries", "Ignore files like images, pdfs, videos etc")
   .option("--ignore-all", "Ignore all files")
   .option("--structure-only", "Just return the filenames with full path")
   .option("--token <token>", "Personal access token")
-  .action(async (repository, options: ServiceOptions) => {
+  .action(async (repository: string, options: ServiceOptions) => {
     try {
-      await cloneGithubRepo(repository, options);
+      const [repoPart, branch] = repository.split("@");
+      const [scm, repo] = repoPart?.split(":")!;
+
+      switch (scm) {
+        case "github":
+          await cloneGithubRepo(repo!, branch!, options);
+          break;
+        case "gitlab":
+          await cloneGitlabRepo(repo!, branch!, options);
+          break;
+        default:
+          break;
+      }
     } catch (err: any) {
       console.error(err.message);
       process.exit(1);

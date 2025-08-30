@@ -37,6 +37,7 @@
   ],
   "dependencies": {
     "@gitbeaker/rest": "^43.4.0",
+    "@octokit/rest": "^22.0.0",
     "commander": "^14.0.0"
   },
   "devDependencies": {

@@ -12,3 +12,4 @@
 export * from "./cloneProject"; // Local project → JSON snapshot
 export * from "./createProject"; // JSON snapshot → Restore project
 export * from "./cloneGithubRepo"; // Remote GitHub repo → JSON snapshot
+export * from "./cloneGitlabRepo";

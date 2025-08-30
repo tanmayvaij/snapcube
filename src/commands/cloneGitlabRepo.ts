@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs";
-import { getGithubFiles } from "../core";
+import { getGitlabFiles } from "../core";
 import { ServiceOptions } from "../types";
 
 /**
@@ -12,7 +12,7 @@ import { ServiceOptions } from "../types";
  *    - token: Reserved for GitHub API use (not used in local scans)
  *    - structureOnly: If true, combine `filePath` + `fileName` into one
  */
-export const cloneGithubRepo = async (
+export const cloneGitlabRepo = async (
   repository: string,
   branch: string,
   options?: ServiceOptions
@@ -23,7 +23,7 @@ export const cloneGithubRepo = async (
   console.log(`Scanning project: github:${owner}/${repoName}`);
 
   // Fetch all files and metadata from the GitHub API
-  const files = await getGithubFiles(repository, branch, options);
+  const files = await getGitlabFiles(repository, branch, options);
 
   console.log(`Scan complete. Total files: ${files?.length}`);
 

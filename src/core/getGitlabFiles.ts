@@ -43,7 +43,7 @@ export const getGitlabFiles = async (
       (files as SnapCubeFile[]).push({
         fileName: file.name,
         filePath: `${repository.split("/")[1]}${
-          filePath === "." ? "" : filePath
+          filePath === "." ? "" : `/${filePath}`
         }`,
         content:
           file.type === "blob"

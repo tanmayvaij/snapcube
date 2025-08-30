@@ -1,101 +1,69 @@
-import { dirname } from "path";
+import { Octokit } from "@octokit/rest";
+import { ServiceOptions, SnapCubeFile } from "../types";
 import { isBinaryFile } from "../utils/isBinaryFile";
-import { GithubRepoObject, ServiceOptions, SnapCubeFile } from "../types";
+import { dirname } from "path";
 
-/**
- * Fetches and serializes all files in a GitHub repository into SnapCubeFile format.
- * Supports public & private repos (private requires a GitHub token).
- *
- * @param repository - Format: "owner/repo"
- * @param options - Configuration for how files should be scanned
- *    - ignoreBinaries: Skip contents of binary files (images, pdfs, etc.)
- *    - ignoreAll: Skip contents of all files (structure only)
- *    - token: Reserved for GitHub API use (not used in local scans)
- *    - structureOnly: If true, combine `filePath` + `fileName` into one
- *
- * @returns Array of SnapCubeFile objects or string representing repo files
- *
- * @throws Error if the repo is not accessible, invalid, or token issues occur
- */
 export const getGithubFiles = async (
   repository: string,
+  branch: string,
   options?: ServiceOptions
 ) => {
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+  const [owner, repo] = repository.split("/");
+
+  if (!owner || !repo) {
+    throw new Error("Invalid repository format. Expected 'owner/repo'.");
+  }
+
   const files: SnapCubeFile[] | string[] = [];
 
-  // Base API URL to list repo contents
-  const repoUrl = `https://api.github.com/repos/${repository}/contents`;
+  // Get the repository tree recursively
+  const { data: tree } = await octokit.git.getTree({
+    owner,
+    repo,
+    tree_sha: branch,
+    recursive: "true",
+  });
 
-  // Extract repo name (second part of "owner/repo")
-  const repoName = repository.split("/")[1]!;
+  const gitHubFiles = tree.tree.filter((file) => file.type === "blob");
 
-  /**
-   * Recursively scans a repo path using GitHub API
-   * @param path - Subpath within repo ("" = root)
-   */
-  const scanRepo = async (path: string) => {
-    // Fetch directory listing from GitHub API
-    const res = await fetch(`${repoUrl}/${path}`, {
-      headers: options?.token
-        ? { Authorization: `token ${options?.token}` }
-        : {},
-    });
+  for (const file of gitHubFiles) {
+    if (!file.path || !file.sha) continue;
 
-    // Handle HTTP errors explicitly
-    if (!res.ok) {
-      if (res.status === 404) {
-        if (!options?.token)
-          throw new Error(
-            `Repository is private or does not exist: ${repository}. Please provide a GitHub token with --token.`
-          );
-        else throw new Error(`Repository not found: ${repository}`);
-      } else if (res.status === 401)
-        throw new Error(`Unauthorized. Your token may be invalid or expired.`);
-      else
-        throw new Error(
-          `Failed to fetch repo: ${res.status} ${res.statusText}`
-        );
-    }
+    if (options?.structureOnly) {
+      (files as string[]).push(file.path);
+    } else {
+      const isBinary = isBinaryFile(file.path);
 
-    // Parse the response JSON (array of files/folders)
-    const objects = (await res.json()) as GithubRepoObject[];
+      let content: string | null = null;
 
-    for (const object of objects) {
-      if (object.type === "dir") {
-        // Recurse into subdirectories
-        await scanRepo(object.path);
-      } else if (options?.structureOnly) (files as string[]).push(object.path);
-      else {
-        // File case
-        const isBinary = isBinaryFile(object.name);
-
-        let content: string | null = null;
-
-        // Fetch file content if not ignored
-        if (!(options?.ignoreAll || (options?.ignoreBinaries && isBinary))) {
-          const res = await fetch(object.download_url);
-
-          if (isBinary)
-            content = Buffer.from(await res.arrayBuffer()).toString("base64");
-          else content = await res.text();
-        }
-
-        const dir = dirname(object.path);
-
-        // Push file metadata + content
-        (files as SnapCubeFile[]).push({
-          fileName: object.name,
-          filePath: `${repoName}${dir === "." ? "" : `/${dir}`}`, // Prefix with repo name for clarity
-          content,
-          isBinary,
-          encoding: isBinary ? "base64" : "utf-8",
+      if (!(options?.ignoreAll || (options?.ignoreBinaries && isBinary))) {
+        const { data: fileData } = await octokit.repos.getContent({
+          owner,
+          repo,
+          path: file.path,
+          ref: branch,
         });
-      }
-    }
-  };
 
-  // Start scanning from repo root
-  await scanRepo("");
+        if ("content" in fileData) {
+          content = isBinary
+            ? fileData.content
+            : Buffer.from(fileData.content, "base64").toString("utf-8");
+        }
+      }
+
+      const filePath = dirname(file.path);
+
+      (files as SnapCubeFile[]).push({
+        fileName: file.path.split("/").pop() || file.path,
+        filePath: `${repo}${filePath === "." ? "" : "/" + filePath}`,
+        content: content,
+        isBinary,
+        encoding: isBinary ? "base64" : "utf-8",
+      });
+    }
+  }
 
   return files;
 };
