@@ -15,7 +15,7 @@ const program = new Command();
 program
   .name("snapcube")
   .description("Clone or recreate project structure")
-  .version("1.4.2");
+  .version("2.0.0");
 
 /**
  * -------------------------

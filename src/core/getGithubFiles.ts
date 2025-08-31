@@ -8,7 +8,7 @@ export const getGithubFiles = async (
   branch: string,
   options?: ServiceOptions
 ) => {
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+  const octokit = new Octokit({ auth: options?.token });
 
   const [owner, repo] = repository.split("/");
 

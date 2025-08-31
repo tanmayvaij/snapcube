@@ -3,7 +3,7 @@ import { getGitlabFiles } from "../core";
 import { ServiceOptions } from "../types";
 
 /**
- * Clone (snapshot) a GitHub repository into a JSON file.
+ * Clone (snapshot) a Gitlab repository into a JSON file.
  *
  * @param repository - Repository in the format "owner/repo"
  * @param options - Configuration for how files should be scanned
@@ -20,9 +20,9 @@ export const cloneGitlabRepo = async (
   // Split "owner/repo" into separate variables
   const [owner, repoName] = repository.split("/");
 
-  console.log(`Scanning project: github:${owner}/${repoName}`);
+  console.log(`Scanning project: gitlab:${owner}/${repoName}`);
 
-  // Fetch all files and metadata from the GitHub API
+  // Fetch all files and metadata from the Gitlab API
   const files = await getGitlabFiles(repository, branch, options);
 
   console.log(`Scan complete. Total files: ${files?.length}`);

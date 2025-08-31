@@ -8,7 +8,7 @@ export const getGitlabFiles = async (
   branch: string,
   options?: ServiceOptions
 ) => {
-  const api = new Gitlab({ host: "https://gitlab.com" });
+  const api = new Gitlab({ host: "https://gitlab.com", token: options?.token });
 
   const files: SnapCubeFile[] | string[] = [];
 
