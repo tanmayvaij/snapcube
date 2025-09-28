@@ -1,6 +1,6 @@
 {
   "name": "snapcube",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "📦 Snapshot, backup, and restore any project — binary-safe, fast, and simple CLI.",
   "license": "MIT",
   "bin": {
