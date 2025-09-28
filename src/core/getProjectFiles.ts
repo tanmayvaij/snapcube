@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "fs";
 import { basename, join, relative, resolve } from "path";
 
-import { IGNORE_DIRS } from "../config";
+import { IGNORE_DIRS, IGNORE_FILES } from "../config";
 import { isBinaryFile } from "../utils/isBinaryFile";
 import { ServiceOptions, SnapCubeFile } from "../types";
 
@@ -33,22 +33,33 @@ export const getProjectFiles = (rootPath: string, options?: ServiceOptions) => {
    * @param path - Current path being scanned
    */
   const scanDir = (path: string) => {
+
     for (const object of readdirSync(path, { withFileTypes: true })) {
       const fullPath = join(object.parentPath, object.name);
 
+      // check if the object is a directory
       if (object.isDirectory()) {
         // Skip ignored directories like node_modules, .git, dist, etc.
         if (IGNORE_DIRS.includes(object.name)) continue;
 
         // Recursive scan
         scanDir(fullPath);
-      } else if (options?.structureOnly) {
+      } 
+      
+      // if the object is not a directory, check if its not an ignored file
+      else if (IGNORE_FILES.includes(object.name)) continue;
+
+      // if structory only mode is on, simply push the filenames along with their path
+      else if (options?.structureOnly) {
         const relativePath = relative(rootPath, object.parentPath);
 
         (files as string[]).push(
           `${relativePath ? relativePath + "/" : ""}${object.name}`
         );
-      } else {
+      } 
+      
+      // else push the full snapcube object
+      else {
         const filePath = join(
           basename(resolve(rootPath)), // Project root folder name
           relative(rootPath, object.parentPath) // Relative subpath inside project

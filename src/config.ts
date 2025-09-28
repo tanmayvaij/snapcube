@@ -14,6 +14,11 @@ const IGNORE_DIRS = [
 ];
 
 /**
+ * Files that should always be ignored while scanning a project.
+ */
+const IGNORE_FILES = ["yarn.lock", "package-lock.json", "pnpm-lock.yaml"];
+
+/**
  * File extensions considered binary.
  * These will be encoded in base64 if included in snapshots.
  */
@@ -29,4 +34,4 @@ const BINARY_EXTS = [
   ".mp4",
 ];
 
-export { IGNORE_DIRS, BINARY_EXTS };
+export { IGNORE_DIRS, IGNORE_FILES, BINARY_EXTS };
